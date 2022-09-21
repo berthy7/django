@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'system.administracion.condominio',
     'system.administracion.domicilio',
+    'system.usuarios.login',
 ]
 
 MIDDLEWARE = [

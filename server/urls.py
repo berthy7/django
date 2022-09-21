@@ -20,10 +20,9 @@ from system.administracion.condominio import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-path('login/', views.logon, name='login'),
-path('logout/', views.signout, name='logout'),
-path('signup/', views.signup, name='signup'),
 
+path('login/', include(('system.usuarios.login.urls','login'))),
 path('condominio/', include(('system.administracion.condominio.urls','condominio')))
+
 
 ]

@@ -11,43 +11,6 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-def signup(request):
-    if request.method == 'GET':
-        return render(request, 'login/signup.html', {
-            'form': UserCreationForm
-        })
-    else:
-        if request.POST['password1'] == request.POST['password2']:
-            # register user
-            try:
-                user = User.objects.create_user(username=request.POST["username"], password=request.POST["password1"])
-                user.save()
-                login(request,user)
-                return redirect('home')
-            except IntegrityError:
-                return HttpResponse("ERROR el usuario ya existe")
-        return HttpResponse("password no corrrecto")
-
-def signout(request):
-    logout(request)
-    return redirect('home')
-
-def logon(request):
-    if request.method == 'GET':
-        return render(request, 'login/index.html', {
-                'form': AuthenticationForm
-            })
-    else:
-        user = authenticate(request,username=request.POST['username'],password=request.POST['password'])
-
-        if user is None:
-            return render(request, 'login/index.html', {
-                'form': AuthenticationForm,
-                'error': 'username incorrecto'
-            })
-        else:
-            login(request,user)
-            return redirect('home')
 
 @login_required
 def home(request):
