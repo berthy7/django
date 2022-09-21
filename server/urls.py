@@ -22,7 +22,7 @@ urlpatterns = [
     path('', views.home, name='home'),
 
 path('login/', include(('system.usuarios.login.urls','login'))),
-path('condominio/', include(('system.administracion.condominio.urls','condominio')))
-
+path('condominio/', include(('system.administracion.condominio.urls','condominio'))),
+path('domicilio/', include(('system.administracion.domicilio.urls','domicilio')))
 
 ]
