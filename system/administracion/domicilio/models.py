@@ -11,6 +11,8 @@ class Domicilio(models.Model):
     ubicacion = models.CharField(max_length=100)
     tipo = models.CharField(max_length=100,null=True)
     fkcondominio = models.ForeignKey(Condominio,on_delete=models.CASCADE)
+    estado = models.BooleanField(default=True)
+    habilitado = models.BooleanField(default=True)
 
     class Meta:
         db_table = "administracion_domilicio"

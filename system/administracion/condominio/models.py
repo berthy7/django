@@ -9,6 +9,7 @@ class Condominio(models.Model):
     nombre = models.TextField(blank=True)
     fecha = models.DateField(auto_now_add=True)
     fechaRegistro = models.DateField(null=True)
+    estado = models.BooleanField(default=True)
     habilitado = models.BooleanField(default=True)
 
     class Meta:

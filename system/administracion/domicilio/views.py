@@ -7,15 +7,17 @@ from django.db import IntegrityError
 from .models import Domicilio
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.serializers import serialize
 
 import json
-from django.core import serializers
 
 
 @login_required
 def index(request):
-    domicilios = Domicilio.objects.all().order_by('-id')
-    return render(request, 'index.html', {'domicilios':domicilios})
+    return render(request, 'index.html')
+    # domicilios = Domicilio.objects.all().order_by('-id')
+
+    # return render(request, 'index.html', {'domicilios':domicilios})
 
 @login_required
 def form(request):
@@ -33,10 +35,45 @@ def form(request):
 
 def list(request):
     dt_list = []
-    datos = Domicilio.objects.all().order_by('id')
+    datos = Domicilio.objects.filter(habilitado=True).values().order_by('-id')
     for item in datos:
-        dt_list.append(dict(id=item.id,codigo=item.codigo,numero=item.numero))
+        dt_list.append(dict(id=item.id,codigo=item.codigo,numero=item.numero,estado=item.estado))
     return JsonResponse(dt_list, safe=False)
+
+
+@login_required
+def state(request):
+    if request.method == 'GET':
+        print("get")
+        return render(request, 'condominio/create_condominio.html')
+    else:
+        try:
+            dicc = json.load(request)['obj']
+            domicilio = Domicilio.objects.get(id=dicc["id"])
+            domicilio.estado = dicc["estado"]
+            domicilio.save()
+            return JsonResponse(dict(success=True,mensaje="cambio de estado"), safe=False)
+
+        except Exception as e:
+            return JsonResponse(dict(success=False, mensaje=e), safe=False)
+
+
+@login_required
+def delete(request):
+    if request.method == 'GET':
+        print("get")
+        return render(request, 'condominio/create_condominio.html')
+    else:
+        try:
+            dicc = json.load(request)['obj']
+            domicilio = Domicilio.objects.get(id=dicc["id"])
+            domicilio.estado = False
+            domicilio.habilitado = False
+            domicilio.save()
+            return JsonResponse(dict(success=True,mensaje="se Eliminio"), safe=False)
+
+        except Exception as e:
+            return JsonResponse(dict(success=False, mensaje=e), safe=False)
 
 
 

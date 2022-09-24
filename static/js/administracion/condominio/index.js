@@ -18,9 +18,10 @@ function load_table(data_tb) {
             { title: "Numero", data: "numero" },
             { title: "Estado", data: "estado",
                 render: function(data, type, row) {
+                    let check = data ? 'checked' : ''
                     return '\
                     <div title="' + row.estado + '">\
-                        <input id="enabled' + row.id + '" type="checkbox" class="chk-col-indigo enabled" onclick="set_enable(this)" data-id="' + row.id + '" ' + row.check + ' ' + row.disable + '>\
+                        <input id="enabled' + row.id + '" type="checkbox" class="chk-col-indigo enabled" onclick="set_enable(this)" data-id="' + row.id + '" ' + check + ' ' + row.disable + '>\
                         <label for="enabled' + row.id + '"></label>\
                     </div>'
                 }
@@ -29,18 +30,18 @@ function load_table(data_tb) {
                 render: function(data, type, row) {
                      const dataObject = JSON.stringify(row);
                     a = ''
-                    if (row.disable === '') {
+                    // if (row.disable === '') {
                         a += `\
-                            <button data-object='${dataObject}'  type="button" class="btn bg-teal waves-effect" title="Editar" onclick="edit_item(this)">\
-                                <i class="material-icons">edit</i>\
+                            <button data-object='${dataObject}'  type="button" class="btn btn-primary edit" title="Editar" onclick="edit_item(this)">\
+                                <i class="mdi mdi-file-document-edit"></i>\
                             </button>`
-                    }
-                    if (row.delete) {
+                    // }
+                    // if (row.delete) {
                         a += '\
                             <button data-json="' + data + '"  type="button" class="btn btn-danger waves-effect" title="Eliminar" onclick="delete_item(this)">\
-                                <i class="material-icons">clear</i>\
+                                <i class="mdi mdi-delete"></i>\
                             </button>'
-                    }
+                    // }
                     if (a === '') a = 'Sin permisos';
                     return a
                 }
@@ -93,21 +94,6 @@ $('#insert').on('click', function() {
     if (!notvalid) {
         objeto = JSON.stringify({
             'contrato': $('#contrato').val(),
-            'fechai': $('#fechai').val(),
-            'fechaf': $('#fechaf').val(),
-            'codigo': $('#codigo').val(),
-            'nombre': $('#nombre').val(),
-            'cant_casas':  $('#cant_casas').val(),
-            'cant_departamentos': $('#cant_departamentos').val(),
-            'cant_residentes': $('#cant_residentes').val(),
-            'cant_vehiculos': $('#cant_vehiculos').val(),
-            'cant_tarjetas': $('#cant_tarjetas').val(),
-            'ip_publica': $('#ip_publica').val(),
-            'ip_privada': $('#ip_privada').val(),
-            'puerto': $('#puerto').val(),
-            'singuardia':document.getElementById('singuardia').checked,
-            'invitacionpaselibre':document.getElementById('invitacionpaselibre').checked,
-            'invitacionmultiple':document.getElementById('invitacionmultiple').checked
         })
 
         ajax_call('condominio_insert', {
@@ -134,29 +120,9 @@ function edit_item(e) {
 
     clean_data()
 
-    console.log(self)
-
     $('#id').val(self.id)
     $('#contrato').val(self.contrato)
-    $('#fechai').val(self.fechai)
-    $('#fechaf').val(self.fechaf)
-    $('#codigo').val(self.codigo)
-    $('#nombre').val(self.nombre)
-    $('#cant_casas').val(self.cant_casas)
-    $('#cant_departamentos').val(self.cant_departamentos)
-    $('#cant_residentes').val(self.cant_residentes)
-    $('#cant_vehiculos').val(self.cant_vehiculos)
-    $('#cant_tarjetas').val(self.cant_tarjetas)
-    $('#ip_publica').val(self.ip_publica)
-    $('#ip_privada').val(self.ip_privada)
-    $('#puerto').val(self.puerto)
-    document.getElementById('singuardia').checked=self.singuardia
-    document.getElementById('invitacionpaselibre').checked=self.invitacionpaselibre
-    document.getElementById('invitacionmultiple').checked=self.invitacionmultiple
-
-
-    clean_form()
-    verif_inputs('')
+    
     $('.item-form').parent().addClass('focused')
     $('#insert').hide()
     $('#update').show()
@@ -167,26 +133,10 @@ function edit_item(e) {
 $('#update').click(function() {
     notvalid = validationInputSelectsWithReturn("modal");
 
-
     if (!notvalid) {
         objeto = JSON.stringify({
             'id': $('#id').val(),
             'contrato': $('#contrato').val(),
-            'fechai': $('#fechai').val(),
-            'fechaf': $('#fechaf').val(),
-            'codigo': $('#codigo').val(),
-            'nombre': $('#nombre').val(),
-            'cant_casas': $('#cant_casas').val(),
-            'cant_departamentos': $('#cant_departamentos').val(),
-            'cant_residentes': $('#cant_residentes').val(),
-            'cant_vehiculos': $('#cant_vehiculos').val(),
-            'cant_tarjetas': $('#cant_tarjetas').val(),
-            'ip_publica': $('#ip_publica').val(),
-            'ip_privada': $('#ip_privada').val(),
-            'puerto': $('#puerto').val(),
-            'singuardia':document.getElementById('singuardia').checked,
-            'invitacionpaselibre':document.getElementById('invitacionpaselibre').checked,
-            'invitacionmultiple':document.getElementById('invitacionmultiple').checked
         })
 
         ajax_call('condominio_update', {
@@ -214,11 +164,11 @@ function set_enable(e) {
     b = $(e).prop('checked')
 
     if (!b) {
-        cb_title = "¿Está seguro de que desea dar de baja la condominio?"
+        cb_title = "¿Está seguro de que desea dar de baja?"
         cb_text = ""
         cb_type = "warning"
     } else {
-        cb_title ="¿Está seguro de que desea dar de alta la condominio?"
+        cb_title ="¿Está seguro de que desea dar de alta?"
         cb_text = ""
         cb_type = "info"
     }
@@ -240,22 +190,21 @@ function set_enable(e) {
             if (b) $(cb_delete).parent().prop('title', 'Activo');
             else $(cb_delete).parent().prop('title', 'Inhabilitado');
 
-            objeto =JSON.stringify({
+            objeto ={
                 id: parseInt($(cb_delete).attr('data-id')),
                 estado: b
-            })
+            }
 
-            ajax_call('condominio_state', {
-                object: objeto, _xsrf: getCookie("_xsrf")}, null,
-                function (response) {
-                    self = JSON.parse(response)
-                    icono = self.success? 'success': 'warning'
-                    show_msg_lg(icono, self.message, 'center')
-                    setTimeout(function() {
-                        reload_table()
-                    }, 2000);
+            fetch("/domicilio/state/",{
+                method: "POST",
+                body:JSON.stringify({'obj':objeto}),
+                headers:{
+                    "X-CSRFToken" : getCookie('csrftoken')
                 }
-            )
+            })
+            .then(function(response){
+                reload_table()
+             })
         }
         else if (result.dismiss === 'cancel') $(cb_delete).prop('checked', !$(cb_delete).is(':checked'));
         else if (result.dismiss === 'esc') $(cb_delete).prop('checked', !$(cb_delete).is(':checked'));
@@ -265,7 +214,7 @@ function set_enable(e) {
 function delete_item(e) {
     Swal.fire({
         icon: "warning",
-        title: "¿Está seguro de que desea eliminar permanentemente la condominio?",
+        title: "¿Está seguro de que desea eliminar?",
         text: "",
         showCancelButton: true,
         allowOutsideClick: false,
@@ -275,24 +224,22 @@ function delete_item(e) {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.value) {
-            objeto = JSON.stringify({
-                'id': parseInt(JSON.parse($(e).attr('data-json')))
-            })
 
-            ajax_call('condominio_delete', {
-                object: objeto,_xsrf: getCookie("_xsrf")}, null,
-                function (response) {
-                    self = JSON.parse(response);
+            objeto ={
+                id: parseInt(JSON.parse($(e).attr('data-json')))
+            }
 
-                    if (self.success) {
-                        show_msg_lg('success', self.message, 'center')
-                        setTimeout(function () {
-                            reload_table()
-                        }, 2000);
-                    }
-                    else show_toast('warning', self.message);
+            fetch("/domicilio/delete/",{
+                method: "POST",
+                body:JSON.stringify({'obj':objeto}),
+                headers:{
+                    "X-CSRFToken" : getCookie('csrftoken')
                 }
-            );
+            })
+            .then(function(response){
+                reload_table()
+             })
+
         }
     })
 }

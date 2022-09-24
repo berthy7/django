@@ -70,7 +70,7 @@ const loadTable = (params) => {
     deferRender: true,
     columns: params.columns,
     language: {
-      url: "/resources/app/plugins/jquery-datatable/es-ES.json",
+      url: "/app/plugins/jquery-datatable/es-ES.json",
     },
   };
 
@@ -196,4 +196,4 @@ const deleteItem = (params) => {
   });
 };
 
-export { getFormData, processRequest, loadTable, editItem, upsertItem, enableItem, deleteItem };
+// export { getFormData, processRequest, loadTable, editItem, upsertItem, enableItem, deleteItem };
